@@ -129,5 +129,5 @@ for ii in range(10):
 if GenVideoClip:
     VideoClip(frame_stack)
 
-print("Average accumulate reward {} STD {}".format(np.mean(accumulate_reward,np.std(accumulate_reward))))
+print("Average accumulate reward {} STD {}".format(np.mean(accumulate_reward), np.std(accumulate_reward)))
 

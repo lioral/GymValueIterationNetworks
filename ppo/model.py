@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-from ppo.distributions import Categorical, DiagGaussian, Bernoulli
-from ppo.utils import init
+from a2c_ppo_acktr.distributions import Categorical, DiagGaussian, Bernoulli
+from a2c_ppo_acktr.utils import init
 
 
 class Flatten(nn.Module):
@@ -79,8 +79,8 @@ class Policy(nn.Module):
         return value, action_log_probs, dist_entropy
 
     def get_vin_state(self, inputs, obs):
-        return self.base.get_VI_state(inputs, obs)
-
+        value, reward, state = self.base.get_VI_state(inputs, obs)
+        return value[0, ], reward[0, ], state[0, ]
 
 class NNBase(nn.Module):
 

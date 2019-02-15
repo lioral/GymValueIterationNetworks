@@ -65,7 +65,6 @@ def load_data(indir, smooth, bin_size):
                 t_time = float(tmp[2])
                 tmp = [t_time, int(tmp[1]), float(tmp[0])]
                 datas.append(tmp)
-                f.readline()
 
     datas = sorted(datas, key=lambda d_entry: d_entry[0])
     result = []
@@ -103,19 +102,21 @@ color_defaults = [
 ]
 
 
-def visdom_plot(viz, win, value, state, reward, folder, game, name, num_steps, bin_size=100, smooth=1):
+def visdom_plot(viz, win, value, reward, state, folder, game, name, num_steps, bin_size=10, smooth=1):
     tx, ty = load_data(folder, smooth, bin_size)
     if tx is None or ty is None:
         return win
 
     def smooth(y, box_pts):
         box = np.ones(box_pts) / box_pts
-        y_smooth = np.convolve(y, box, mode='same')
+        num_steps = len(y)
+        y = np.concatenate((np.ones(box_pts - 1) * y[0], y), axis=0)
+        y_smooth = np.convolve(y, box, mode='valid')
         return y_smooth
 
     def STD_fn(y, box_pts):
         num_steps = len(y)
-        y = np.concatenate((np.zeros(box_pts - 1), y), axis=0)
+        y = np.concatenate((np.ones(box_pts - 1) * y[0], y), axis=0)
 
 
         return np.std([y[ii: ii + box_pts]
@@ -176,17 +177,17 @@ def visdom_plot(viz, win, value, state, reward, folder, game, name, num_steps, b
     # plot Value and State for value
     fig = plt.figure()
 
-    plt.tight_layout()
-
     ax = plt.subplot(1, 3, 1)
-    ax.imshow(value, extent=[0, 1, 0, 1])
-    ax.title('Value')
+    im = ax.imshow(value[0,], cmap='viridis')
+    plt.title('Value')
+    plt.colorbar(im)
     ax = plt.subplot(1, 3, 2)
-    ax.imshow(reward, extent=[0, 1, 0, 1])
-    ax.title('Reward')
+    im = ax.imshow(reward[0,], cmap='viridis')
+    plt.title('Reward')
+    plt.colorbar(im)
     ax = plt.subplot(1, 3, 3)
-    ax.imshow(state)
-    ax.title('State')
+    ax.imshow((state * 255).permute(1,2,0))
+    plt.title('State')
     plt.show()
     plt.draw()
 

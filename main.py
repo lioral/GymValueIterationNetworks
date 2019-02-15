@@ -66,10 +66,10 @@ def main():
         viz = Visdom(port=args.port)
         win = [None] * 3
 
-    envs = make_vec_envs(VIN, args.seed, args.num_processes,
+    envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
                         args.gamma, args.log_dir, args.add_timestep, device, args.imsize, False)
 
-    if VIN == 'LunarLander-v2':
+    if args.env_name == 'LunarLander-v2':
         VIN_kwargs = LunarLanderModel.get_VIN_kwargs(args.env_name)
         VIN = LunarLanderModel.VIN
     else: # BipedalWalker-v2

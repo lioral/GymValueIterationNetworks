@@ -15,8 +15,8 @@ from utils import resize_image_list
 import cv2
 
 # workaround to unpickle olf model files
-# import sys
-# sys.path.append('ppo')
+import sys
+sys.path.append('ppo')
 
 def VideoClip(frame_stack):
     video_name = 'Bipedal.avi'
